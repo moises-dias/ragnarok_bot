@@ -14,39 +14,26 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 wincap = WindowCapture('WorldRAG | Gepard Shield 3.0 (^-_-^)')
 
 # initialize the Vision class
-vision = Vision('poring_p.jpg')
+vision = Vision()
 
 loop_time = time()
-# ser = serial.Serial('COM6', 9600)
-while(True):
-    sleep(1)
 
-    # while not ser.in_waiting:
-    #     pass
-    # _ = ser.readline()
+while(True):
+    sleep(2)
     
     # get an updated image of the game
     screenshot = wincap.get_screenshot()
 
-    # display the processed image
-    points = vision.find(screenshot, 0.5, 'rectangles')
-    print(len(points))
-    # if(len(points) > 0):
-    #     print(f"poring identificado em: x={points[0][0]}, y={points[0][1]}")
-    #     # send monster coordinate to arduino
-    #     ser.write(bytes('t', encoding='utf-8'))
-    #     sleep(0.02)
-    #     ser.write(bytes(str(points[0][0]), encoding='utf-8'))
-    #     sleep(0.02)
-    #     ser.write(bytes(str(points[0][1]), encoding='utf-8'))
-    #     sleep(0.02)
-    # else:
-    #     # no monster found, tell arduino to look around
-    #     ser.write(bytes('x', encoding='utf-8'))
-    #     sleep(0.02)
+    if vision.checkMsgOnScreen(screenshot[135:190, 210:420], 'first_message'):
+        print('checagem de captcha!')
+        print('apertar enter')
+    elif vision.checkMsgOnScreen(screenshot[323:338, 400:479], 'second_message'):
+        print('numeros disponíveis para serem digitados')
+        result = vision.findNumbers(screenshot[172:185, 237:261])
+        print('enviar os numeros')
+        print(result)
+        sleep(3)
 
-    # press 'q' with the output window focused to exit.
-    # waits 1 ms every loop to process key presses
     if cv.waitKey(1) == ord('q'):
         cv.destroyAllWindows()
         break
