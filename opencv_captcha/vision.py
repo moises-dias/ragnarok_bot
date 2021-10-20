@@ -28,6 +28,7 @@ class Vision:
         result = []
         for key in sorted(matches):
             result.append(matches[key])
+            result = [str(r) for r in result]
         return result
     
     def checkMsgOnScreen(self, game_image, type, threshold=0.9):
