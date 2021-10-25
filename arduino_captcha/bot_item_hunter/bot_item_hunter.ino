@@ -1,70 +1,111 @@
-#include <Keyboard.h>
-#include <Mouse.h>
+int trigPins[] = {13, 14, 26, 33, 5};
+int echoPins[] = {12, 27, 25, 32, 18};
+int distance[] = {0, 0, 0, 0, 0};
+int counts[] = {0, 0, 0, 0, 0};
+bool occupied[] = {false, false, false, false, false};
 
-String incoming = "";
-bool captcha_state = false;
+//define sound speed in cm/uS
+#define SOUND_SPEED 0.034
+
+long duration;
+int distanceCm;
 
 void setup() {
-  delay(1000);
-  pinMode(3, INPUT_PULLUP); // pino 3 no low segura o programa
-  Keyboard.begin();
-  Mouse.begin();
-  Serial.begin(9600);
-  delay(1000);
+  Serial.begin(9600); // Starts the serial communication
+  for (int i = 0; i < 5; i++) {
+    pinMode(trigPins[i], OUTPUT);
+    pinMode(echoPins[i], INPUT);
+  }
 }
 
 void loop() {
-  while (digitalRead(3) == HIGH) {
-    if (!captcha_state) {
-      move();
-      attack();
-    }
-    check_captcha();
-  }
-}
 
-void move() {
-  Keyboard.press(KEY_LEFT_ALT);
-  delay(100);
-  Keyboard.press('1');
-  delay(100);
-  Keyboard.releaseAll();
-  delay(100);
-}
+  for (int i = 0; i < 5; i++) {
+    // Clears the trigPin
+    digitalWrite(trigPins[i], LOW);
+    delayMicroseconds(2);
+    // Sets the trigPin on HIGH state for 10 micro seconds
+    digitalWrite(trigPins[i], HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPins[i], LOW);
+    
+    // Reads the echoPin, returns the sound wave travel time in microseconds
+    duration = pulseIn(echoPins[i], HIGH);
 
-void attack() {
-  for(int i = 0; i < 4; i++) {
-    Keyboard.press(KEY_F1);
-    delay(100);
-    Mouse.press();
-    delay(100);
-    Keyboard.releaseAll();
-    delay(100);
-    Mouse.release();
-    delay(100);
-  }
-}
+    // Calculate the distance
+    distance[i] = round(duration * SOUND_SPEED/2);
 
-void check_captcha() {
-  while(Serial.available()){
-    char inChar = (char)Serial.read();
+    if (occupied[i]) { // se a vaga i está ocupada
+      if (distance[i] > 30) { // se nao identificou carro
+        if (counts[i] > 5) { // se ja esta a 5 ciclos sem identificar carro
+          Serial.println((String)"Vaga: "+ i +" foi liberada");
+          occupied[i] = false;
+          counts[i] = 0;
+        }
+        else {
+          counts[i]++;
+        }
+      }
+      else {
+        if (counts[i] > 0) {
+          counts[i] = 0;
+        }
+      }
+    }
+    if (!occupied[i]) { // se a vaga i está desocupada
+      if (distance[i] < 30) { // se identificou carro
+        if (counts[i] > 5) { // se ja esta a 5 ciclos identificando carro
+          Serial.println((String)"Vaga: "+ i +" foi ocupada");
+          occupied[i] = true;
+          counts[i] = 0;
+        }
+        else {
+          counts[i]++;
+        }
+      }
+      else {
+        if (counts[i] > 0) {
+          counts[i] = 0;
+        }
+      }
+    }
 
-    if (inChar == 'l') {
-      captcha_state = true; // lock
+    for (int i = 0; i < 5; i++) {
+      Serial.print(distance[i]);
+      if (i < 4) {
+        Serial.print(" - ");
+      }
+      else {
+        Serial.println(" ")
+      }
     }
-    else if (inChar == 'u') {
-      captcha_state = false; // unlock
+    for (int i = 0; i < 5; i++) {
+      Serial.print(counts[i]);
+      if (i < 4) {
+        Serial.print(" - ");
+      }
+      else {
+        Serial.println(" ")
+      }
     }
-    else if (inChar == 'e') {
-      Keyboard.press(KEY_RETURN);
-      delay(100);
-      Keyboard.releaseAll();
+    for (int i = 0; i < 5; i++) {
+      Serial.print(occupied[i]);
+      if (i < 4) {
+        Serial.print(" - ");
+      }
+      else {
+        Serial.println(" ")
+      }
     }
-    else {
-      Keyboard.press(inChar);
-      delay(100);
-      Keyboard.releaseAll();
-    }
-    delay(700);
-  }
+    Serial.println(" ")
+
+    // if (i < 4) {
+    //   Serial.print(min(float(distanceCm), float(30)));
+    //   Serial.print(" ");
+    // }
+    // else {
+    //   Serial.println(min(float(distanceCm), float(30)));
+    // }
+  } 
+  delay(500);
 }

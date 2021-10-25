@@ -26,7 +26,7 @@ while(True):
         print('checagem de captcha!')
         print('lock and two enters')
         ser.write(bytes('lee', encoding='utf-8'))
-        sleep(3)
+        sleep(6)
 
         screenshot = wincap.get_screenshot()
 

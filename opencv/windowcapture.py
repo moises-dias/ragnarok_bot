@@ -1,6 +1,8 @@
 import numpy as np
 import win32gui, win32ui, win32con
 
+#remover
+import os
 
 class WindowCapture:
 
@@ -80,8 +82,11 @@ class WindowCapture:
         # https://github.com/opencv/opencv/issues/14866#issuecomment-580207109
         img = np.ascontiguousarray(img)
 
-        #from PIL import Image
-        #im = Image.fromarray(img)
+        from PIL import Image
+        im = Image.fromarray(img)
+
+        #remover
+        im.save(f"img_{len(os.listdir())}.jpeg")
         #im.save("your_file.jpeg")
 
         return img

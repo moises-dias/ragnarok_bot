@@ -24,18 +24,18 @@ class Vision:
         # TM_CCOEFF, TM_CCOEFF_NORMED, TM_CCORR, TM_CCORR_NORMED, TM_SQDIFF, TM_SQDIFF_NORMED
         self.method = method
 
-    def find(self, haystack_img, threshold=0.5, debug_mode=None):
+    def find(self, haystack_img, threshold=0.7, debug_mode=None):
         # run the OpenCV algorithm
         # result = cv.matchTemplate(haystack_img, self.needle_img, self.method)
 
-        transparent_mask = cv.merge([np.ones_like(cv.split(self.needle_img)[0]), np.ones_like(cv.split(self.needle_img)[0]), np.ones_like(cv.split(self.needle_img)[0])])
-        result = cv.matchTemplate(haystack_img, self.needle_img, self.method, mask=transparent_mask)
+        #transparent_mask = cv.merge([np.ones_like(cv.split(self.needle_img)[0]), np.ones_like(cv.split(self.needle_img)[0]), np.ones_like(cv.split(self.needle_img)[0])])
+        result = cv.matchTemplate(haystack_img, self.needle_img, self.method) #, mask=transparent_mask)
         #print(result)
 
         # Get the all the positions from the match result that exceed our threshold
         locations = np.where(result >= threshold)
         locations = list(zip(*locations[::-1]))
-        #print(locations)
+        print(locations)
 
         # You'll notice a lot of overlapping rectangles get drawn. We can eliminate those redundant
         # locations by using groupRectangles().
