@@ -4,10 +4,7 @@ import numpy as np
 
 class Vision:
 
-    # constructor
     def __init__(self):
-        # load the image we're trying to match
-        # https://docs.opencv.org/4.2.0/d4/da8/group__imgcodecs.html
         self.first_message = cv.imread('images/msg1.jpeg', cv.IMREAD_UNCHANGED)
         self.second_message = cv.imread('images/msg2.jpeg', cv.IMREAD_UNCHANGED)
         self.numbers = []
