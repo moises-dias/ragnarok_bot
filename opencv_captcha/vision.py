@@ -10,6 +10,9 @@ class Vision:
         # https://docs.opencv.org/4.2.0/d4/da8/group__imgcodecs.html
         self.first_message = cv.imread('images/msg1.jpeg', cv.IMREAD_UNCHANGED)
         self.second_message = cv.imread('images/msg2.jpeg', cv.IMREAD_UNCHANGED)
+        self.weight = cv.imread('images/peso.jpeg', cv.IMREAD_UNCHANGED)
+        self.two_box = cv.imread('images/2.jpeg', cv.IMREAD_UNCHANGED)
+        self.one_box = cv.imread('images/1.jpeg', cv.IMREAD_UNCHANGED)
         self.numbers = []
         for i in range(10):
             self.numbers.append(cv.imread(f'images/{i}.jpeg', cv.IMREAD_UNCHANGED))
@@ -31,11 +34,19 @@ class Vision:
             result = [str(r) for r in result]
         return result
     
-    def checkMsgOnScreen(self, game_image, type, threshold=0.9):
-        if type == 'first_message':
+    def checkMsgOnScreen(self, game_image, im_type, threshold=0.9):
+        if im_type == 'first_message':
             needle_image = self.first_message
-        else:
+        elif im_type == 'second_message':
             needle_image = self.second_message
+        elif im_type == 'one_box':
+            needle_image = self.one_box
+        elif im_type == 'two_box':
+            needle_image = self.two_box
+        else:
+            needle_image = self.weight
 
         result = cv.matchTemplate(game_image, needle_image, cv.TM_CCOEFF_NORMED)
+        #if im_type == 'weight':
+        #    print(np.max(result))
         return np.any(result >= threshold)
