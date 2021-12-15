@@ -26,8 +26,8 @@ void loop() {
     }
     while (tickets) {
       check_serial();
-      // store_items();
-      make_ticket();
+      store_items();
+      // make_ticket();
     }
   }
 }
@@ -79,11 +79,11 @@ void attack() {
   for(int i = 0; i < 10; i++) {
     if (check_serial())
       return;
-    keyboard_click(KEY_F1, 70);
-    mouse_click(70);
+    keyboard_click(KEY_F1, 100);
+    mouse_click(100);
     if (boxes) {
-      for(int i = 0; i < 6; i++) {
-        keyboard_click(KEY_F7, 30);
+      for(int i = 0; i < 3; i++) {
+        keyboard_click(KEY_F3, 30);
       }
     }
   }
@@ -96,10 +96,6 @@ bool check_serial() {
 
     if (inChar == 't') { // tickets
       tickets = true;
-      return false;
-    }
-    else if (inChar == 'i') { // ira de thor
-      move();
       return false;
     }
     else if (inChar == 'b') { // boxes
@@ -150,20 +146,18 @@ void reset_cursor(int timeout) {
 // }
 
 void move_cursor(int m_x, int m_y, int timeout) {
-  int to_move_x = 0;
-  int to_move_y = 0;
   while (abs(m_x) != 0 || abs(m_y) != 0) {
     if (m_x > 126)
       to_move_x = 127;
     else if (m_x < -126)
-      to_move_x = -127;
+      to_move_x = -127
     else
       to_move_x = m_x;
 
     if (m_y > 126)
       to_move_y = 127;
     else if (m_y < -126)
-      to_move_y = -127;
+      to_move_y = -127
     else
       to_move_y = m_y;
 
@@ -184,33 +178,26 @@ void make_ticket() {
     keyboard_press('2', 100);
     keyboard_release(100);
   }
-  if (check_serial())
-    return;
-  delay(7000);
+  // delay(7000);
 
   // resetar posicao do mouse
   reset_cursor(150);
   // move mouse ate npc
-  move_cursor(202, 227, 150);
+  move_cursor(400, 350, 150);
 
-  // fazendo 4 tickets
-  for (int i = 0; i < 4; i++) {
-    if (check_serial())
-      return;
+  // fazendo 3 tickets
+  for (int i = 0; i < 5; i++) {
     // check_serial();
     // clica enter enter enter baixo enter enter
-    mouse_click(250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_DOWN_ARROW, 250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_RETURN, 250);
+    mouse_click(150);
+    keyboard_click(KEY_RETURN, 150);
+    keyboard_click(KEY_RETURN, 150);
+    keyboard_click(KEY_RETURN, 150);
+    keyboard_click(KEY_DOWN_ARROW, 150);
+    keyboard_click(KEY_RETURN, 150);
+    keyboard_click(KEY_RETURN, 150);
   }
 
-  // retornar mouse para centro da tela
-  reset_cursor(150);
-  move_cursor(338, 316, 150);
   tickets = false;
 }
 

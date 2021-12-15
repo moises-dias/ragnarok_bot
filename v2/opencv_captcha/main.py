@@ -12,67 +12,72 @@ wincap = WindowCapture('WorldRAG | Gepard Shield 3.0 (^-_-^)')
 
 vision = Vision()
 
-ser = serial.Serial('COM5', 9600)
+ser = serial.Serial('COM3', 9600)
 opening = False
 
-with open("log.txt", "a") as myfile:
-    myfile.write("starting at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-    print("starting at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+def serial_send(msg):
+    ser.write(bytes(msg, encoding='utf-8'))
+
+def write_to_file(msg):
+    with open("log.txt", "a") as myfile:
+        myfile.writelines("\n " + msg + " started at " + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+        print(f"{msg} started at " + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
+
+write_to_file('init program')
 
 while(True):
     sleep(1)
     
     screenshot = wincap.get_screenshot()
 
-    if vision.checkMsgOnScreen(screenshot[229:280, 415:612], 'first_message'):
-        with open("log.txt", "a") as myfile:
-            myfile.write("captcha start at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-            print("captcha start at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-        ser.write(bytes('cee', encoding='utf-8'))
+    if vision.checkMsgOnScreen(screenshot['first_message'], 'first_message'):
+        write_to_file('captcha')
+        serial_send('cee')
         sleep(6)
 
         screenshot = wincap.get_screenshot()
 
-        while not vision.checkMsgOnScreen(screenshot[320:341, 397:482], 'second_message'):
+        while not vision.checkMsgOnScreen(screenshot['second_message'], 'second_message'):
             print('enter')
-            ser.write(bytes('e', encoding='utf-8'))
-            sleep(1)
+            serial_send('e')
+            sleep(2)
             screenshot = wincap.get_screenshot()
 
-        while vision.checkMsgOnScreen(screenshot[320:341, 397:482], 'second_message'):
-            result = vision.findNumbers(screenshot[266:279, 437:461])
+        while vision.checkMsgOnScreen(screenshot['second_message'], 'second_message'):
+            result = vision.findNumbers(screenshot['captcha_numbers'])
             to_send = ''.join(result) + 'ee'
             print(to_send, 'three numbers and two enters')
-            ser.write(bytes(to_send, encoding='utf-8'))
+            serial_send(to_send)
             sleep(5)
             screenshot = wincap.get_screenshot()
 
         print('finished')
-        ser.write(bytes('f', encoding='utf-8')) # finished
-    elif vision.checkMsgOnScreen(screenshot[113:126, 23:42], 'weight', threshold=0.8):
-        print('inventario cheio? confirmando...') 
+        serial_send('f')
+
+    elif vision.checkMsgOnScreen(screenshot['ygg_hundreds'], '4', threshold=0.8) and not vision.checkMsgOnScreen(screenshot['ygg_units'], '0', threshold=0.8): # mais que 100
+        print('full inventory?...') 
         sleep(3)
         screenshot = wincap.get_screenshot()
-        if not vision.checkMsgOnScreen(screenshot[113:126, 23:42], 'weight', threshold=0.8):
+        if not (vision.checkMsgOnScreen(screenshot['ygg_hundreds'], '4', threshold=0.8) and not vision.checkMsgOnScreen(screenshot['ygg_units'], '0', threshold=0.8)):
             continue
-        with open("log.txt", "a") as myfile:
-            myfile.write("full inventory at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-            print("full inventory at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-        ser.write(bytes('t', encoding='utf-8')) # storage
+        write_to_file('full inventory')
+        serial_send('t')
         sleep(20)
         print('terminou de guardar itens!')
-    elif not opening and vision.checkMsgOnScreen(screenshot[19:30, 297:305], 'two_box'):
-        with open("log.txt", "a") as myfile:
-            myfile.write("opening boxes at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-            print("opening boxes at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-        ser.write(bytes('b', encoding='utf-8')) # boxes
+
+    elif not opening and vision.checkMsgOnScreen(screenshot['box_hundreds'], '2'):
+        write_to_file('opening boxes')
+        serial_send('b')
         opening = True
-    elif opening and not (vision.checkMsgOnScreen(screenshot[19:30, 297:305], 'one_box') or vision.checkMsgOnScreen(screenshot[19:30, 297:305], 'two_box')):
-        with open("log.txt", "a") as myfile:
-            myfile.write("stop opening boxes at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-            print("stop opening boxes at" + str(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
-        ser.write(bytes('b', encoding='utf-8')) # boxes
+
+    elif opening and not (vision.checkMsgOnScreen(screenshot['box_hundreds'], '1') or vision.checkMsgOnScreen(screenshot['box_hundreds'], '2')):
+        write_to_file('stop opening boxes')
+        serial_send('b')
         opening = False
+    elif vision.checkMsgOnScreen(screenshot['iradethor'], 'iradethor', threshold=0.75):
+        serial_send('i')
+        # print('iradethor')
+        sleep(1)
     # else:
     #     print('nothing...')
 

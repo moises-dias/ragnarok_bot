@@ -79,14 +79,29 @@ class WindowCapture:
         # https://github.com/opencv/opencv/issues/14866#issuecomment-580207109
         img = np.ascontiguousarray(img)
 
-        #remover
+        # descomentar para pegar coordenadas
         # from PIL import Image
         # im = Image.fromarray(img)
         # import os
         # im.save(f"img_{len(os.listdir())}.jpeg")
-        #im.save("your_file.jpeg")
 
-        return img
+        ygg_hundreds = img[18:31, 385:392]
+        ygg_units = img[18:31, 398:406]
+        box_hundreds = img[18:31, 413:421]
+        first_message = img[252:311, 387:594]
+        second_message = img[250:270, 285:370]
+        captcha_numbers = img[290:310, 410:440]
+        iradethor = img[138:157, 351:436]
+
+        return {
+            "ygg_hundreds": ygg_hundreds, 
+            "ygg_units": ygg_units, 
+            "box_hundreds": box_hundreds, 
+            "first_message": first_message, 
+            "second_message": second_message, 
+            "captcha_numbers": captcha_numbers,
+            "iradethor": iradethor
+        }
 
     # find the name of the window you're interested in.
     # once you have it, update window_capture()
