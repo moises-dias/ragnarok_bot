@@ -85,13 +85,13 @@ class WindowCapture:
         # import os
         # im.save(f"img_{len(os.listdir())}.jpeg")
 
-        ygg_hundreds = img[18:31, 385:392]
-        ygg_units = img[18:31, 398:406]
-        box_hundreds = img[18:31, 413:421]
-        first_message = img[252:311, 387:594]
-        second_message = img[250:270, 285:370]
-        captcha_numbers = img[290:310, 410:440]
-        iradethor = img[138:157, 351:436]
+        ygg_hundreds = img[18:31, 382:390]
+        ygg_units = img[18:31, 396:404]
+        box_hundreds = img[18:31, 411:419]
+        first_message = img[124:211, 189:432]
+        second_message = img[241:283, 279:382]
+        captcha_numbers = img[162:203, 215:270]
+        iradethor = img[130:176, 345:454]
 
         return {
             "ygg_hundreds": ygg_hundreds, 
