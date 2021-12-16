@@ -30,7 +30,13 @@ while(True):
     
     screenshot = wincap.get_screenshot()
 
-    if vision.checkMsgOnScreen(screenshot['first_message'], 'first_message'):
+    if vision.checkMsgOnScreen(screenshot['dc'], 'dc'):
+        write_to_file('dc')
+        serial_send('d')
+        sleep(120)
+        print('finished reconecting')
+
+    elif vision.checkMsgOnScreen(screenshot['first_message'], 'first_message'):
         write_to_file('captcha')
         serial_send('cee')
         sleep(6)
@@ -62,8 +68,44 @@ while(True):
             continue
         write_to_file('full inventory')
         serial_send('t')
-        sleep(20)
-        print('terminou de guardar itens!')
+        # sleep(20)
+        sleep(4)
+
+        screenshot = wincap.get_screenshot()
+        while any([vision.checkMsgOnScreen(screenshot['ygg_hundreds'], str(i), threshold=0.8) for i in range(1, 10)]):
+            # colocar isso dentro de uma função, mas checar se tem captcha enqnt faz ticket, msm trecho do elif acima
+            if vision.checkMsgOnScreen(screenshot['first_message'], 'first_message'):
+                write_to_file('captcha')
+                serial_send('cee')
+                sleep(6)
+
+                screenshot = wincap.get_screenshot()
+
+                while not vision.checkMsgOnScreen(screenshot['second_message'], 'second_message'):
+                    print('enter')
+                    serial_send('e')
+                    sleep(2)
+                    screenshot = wincap.get_screenshot()
+
+                while vision.checkMsgOnScreen(screenshot['second_message'], 'second_message'):
+                    result = vision.findNumbers(screenshot['captcha_numbers'])
+                    to_send = ''.join(result) + 'ee'
+                    print(to_send, 'three numbers and two enters')
+                    serial_send(to_send)
+                    sleep(5)
+                    screenshot = wincap.get_screenshot()
+
+                print('finished')
+                serial_send('f')
+            
+            # se ainda não zerou yggs e não recebeu captcha, pede pra continuar fazendo ticket
+            else:
+                serial_send('t')
+                print('making tickets...')
+            sleep(5)
+            screenshot = wincap.get_screenshot()
+
+        print('finished storing items!')
 
     elif not opening and vision.checkMsgOnScreen(screenshot['box_hundreds'], '2'):
         write_to_file('opening boxes')

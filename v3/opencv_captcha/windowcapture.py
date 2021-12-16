@@ -92,6 +92,7 @@ class WindowCapture:
         second_message = img[250:270, 285:370]
         captcha_numbers = img[290:310, 410:440]
         iradethor = img[138:157, 351:436]
+        dc = img[257:290, 264:435]
 
         return {
             "ygg_hundreds": ygg_hundreds, 
@@ -100,7 +101,8 @@ class WindowCapture:
             "first_message": first_message, 
             "second_message": second_message, 
             "captcha_numbers": captcha_numbers,
-            "iradethor": iradethor
+            "iradethor": iradethor,
+            "dc": dc
         }
 
     # find the name of the window you're interested in.

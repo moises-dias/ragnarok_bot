@@ -11,7 +11,8 @@ class Vision:
         self.images = {
             "first_message": cv.imread('images/msg1.jpeg', cv.IMREAD_UNCHANGED),
             "second_message": cv.imread('images/msg2.jpeg', cv.IMREAD_UNCHANGED),
-            "iradethor": cv.imread('images/iradethor.jpeg', cv.IMREAD_UNCHANGED)
+            "iradethor": cv.imread('images/iradethor.jpeg', cv.IMREAD_UNCHANGED),
+            "dc": cv.imread('images/dc.jpeg', cv.IMREAD_UNCHANGED)
         }
         for i in range(10):
             self.images[str(i)] = cv.imread(f'images/{i}.jpeg', cv.IMREAD_UNCHANGED)

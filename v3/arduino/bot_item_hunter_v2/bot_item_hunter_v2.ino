@@ -89,6 +89,29 @@ void attack() {
   }
 }
 
+void reconect() {
+  delay(50000);
+  keyboard_click(KEY_RETURN, 100);
+  delay(15000);
+  char pass [] = "open12";
+  int lenPass = 6;
+  for(int i = 0; i < lenPass; i++) {
+    keyboard_click(pass[i], 300);
+  }
+  keyboard_click(KEY_RETURN, 100);
+  delay(15000);
+  keyboard_click(KEY_RETURN, 100);
+  delay(15000);
+  keyboard_click(KEY_RETURN, 100);
+  delay(15000);
+  keyboard_click(KEY_F2, 200);
+  delay(1000);
+  keyboard_press(KEY_LEFT_ALT, 300);
+  keyboard_press('3', 300);
+  keyboard_release(300);
+
+}
+
 bool check_serial() {
   while(Serial.available()){
     char inChar = (char)Serial.read();
@@ -118,6 +141,10 @@ bool check_serial() {
         }
       }
       return true;
+    }
+    else if (inChar == 'd') { // disconnected
+      reconect();
+      return false;
     }
   }
   return false;
@@ -186,7 +213,7 @@ void make_ticket() {
   }
   if (check_serial())
     return;
-  delay(7000);
+  delay(5000);
 
   // resetar posicao do mouse
   reset_cursor(150);
@@ -211,6 +238,8 @@ void make_ticket() {
   // retornar mouse para centro da tela
   reset_cursor(150);
   move_cursor(338, 316, 150);
+  if (check_serial())
+      return;
   tickets = false;
 }
 
