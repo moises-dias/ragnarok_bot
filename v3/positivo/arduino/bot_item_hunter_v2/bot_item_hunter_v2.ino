@@ -119,7 +119,7 @@ bool check_serial() {
 
     if (inChar == 't') { // tickets
       tickets = true;
-      return false;
+      // return false;
     }
     else if (inChar == 'i') { // ira de thor
       move();
@@ -228,13 +228,13 @@ void make_ticket() {
     // clica enter enter enter baixo enter enter
   while(tickets) {
     tickets = false;
-    mouse_click(750);
-    keyboard_click(KEY_RETURN, 750);
-    keyboard_click(KEY_RETURN, 750);
-    keyboard_click(KEY_RETURN, 750);
-    keyboard_click(KEY_DOWN_ARROW, 750);
-    keyboard_click(KEY_RETURN, 750);
-    keyboard_click(KEY_RETURN, 750);
+    mouse_click(500);
+    keyboard_click(KEY_RETURN, 500);
+    keyboard_click(KEY_RETURN, 500);
+    keyboard_click(KEY_RETURN, 500);
+    keyboard_click(KEY_DOWN_ARROW, 500);
+    keyboard_click(KEY_RETURN, 500);
+    keyboard_click(KEY_RETURN, 500);
     delay(1000);
 
     if (check_serial())
@@ -244,7 +244,7 @@ void make_ticket() {
 
   // retornar mouse para centro da tela
   reset_cursor(150);
-  move_cursor(338, 316, 150);
+  move_cursor(378, 316, 150);
   // delay(6000);
   // if (check_serial())
       // return;
