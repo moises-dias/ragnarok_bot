@@ -102,7 +102,7 @@ while(True):
             else:
                 serial_send('t')
                 print('making tickets...')
-            sleep(5)
+            sleep(2)
             screenshot = wincap.get_screenshot()
 
         print('finished storing items!')

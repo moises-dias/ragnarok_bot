@@ -17,17 +17,17 @@ void setup() {
 void loop() {
   while (digitalRead(3) == HIGH) {
     check_serial();
+    while (tickets) {
+      // store_items();
+      make_ticket();
+      check_serial();
+    }
     move();
     attack();
     ctr++;
     if (ctr > 200 || ctr < 0) {
       chama_reveladora();
       ctr = 0;
-    }
-    while (tickets) {
-      check_serial();
-      // store_items();
-      make_ticket();
     }
   }
 }
@@ -92,18 +92,18 @@ void attack() {
 void reconect() {
   delay(50000);
   keyboard_click(KEY_RETURN, 100);
-  delay(15000);
+  delay(7000);
   char pass [] = "open12";
   int lenPass = 6;
   for(int i = 0; i < lenPass; i++) {
     keyboard_click(pass[i], 300);
   }
   keyboard_click(KEY_RETURN, 100);
-  delay(15000);
+  delay(7000);
   keyboard_click(KEY_RETURN, 100);
-  delay(15000);
+  delay(7000);
   keyboard_click(KEY_RETURN, 100);
-  delay(15000);
+  delay(7000);
   keyboard_click(KEY_F2, 200);
   delay(1000);
   keyboard_press(KEY_LEFT_ALT, 300);
@@ -221,26 +221,36 @@ void make_ticket() {
   move_cursor(202, 227, 150);
 
   // fazendo 4 tickets
-  for (int i = 0; i < 4; i++) {
-    if (check_serial())
-      return;
+  // for (int i = 0; i < 4; i++) {
+  //   if (check_serial())
+  //     return;
     // check_serial();
     // clica enter enter enter baixo enter enter
-    mouse_click(250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_DOWN_ARROW, 250);
-    keyboard_click(KEY_RETURN, 250);
-    keyboard_click(KEY_RETURN, 250);
+  while(tickets) {
+    tickets = false;
+    mouse_click(750);
+    keyboard_click(KEY_RETURN, 750);
+    keyboard_click(KEY_RETURN, 750);
+    keyboard_click(KEY_RETURN, 750);
+    keyboard_click(KEY_DOWN_ARROW, 750);
+    keyboard_click(KEY_RETURN, 750);
+    keyboard_click(KEY_RETURN, 750);
+    delay(1000);
+
+    if (check_serial())
+      return;
   }
+  // }
 
   // retornar mouse para centro da tela
   reset_cursor(150);
   move_cursor(338, 316, 150);
-  if (check_serial())
-      return;
-  tickets = false;
+  // delay(6000);
+  // if (check_serial())
+      // return;
+  // tickets = false;
+  // delay(3000);
+  // check_serial();
 }
 
 void store_items() {
